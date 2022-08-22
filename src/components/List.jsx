@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Item from './Item'
 import './Pokemon.css'
 
 const List = () => {
     const [allPokemon, setAllPokemon] = useState([])
     const [api, setApi] = useState('https://pokeapi.co/api/v2/pokemon?limit=20')
+    const nextAPI = useRef();
 
     const getAllPokemon = async () => {
         const res = await fetch(api)
@@ -12,6 +13,7 @@ const List = () => {
 
         console.log('log API:', data.next);
         setApi(data.next)
+        nextAPI.current = data.next;
 
         console.log('log:', data.results);
         // console.log('log:', data.results[0].name);
@@ -53,9 +55,11 @@ const List = () => {
                     )
                 })}
             </div>
-            <div>
-                <button className='load-more' onClick={() => getAllPokemon()}>Load more</button>
-            </div>
+            {nextAPI.current != null &&
+                <div>
+                    <button className='load-more' onClick={() => getAllPokemon()}>Load more</button>
+                </div>
+            }
         </div>
     )
 }

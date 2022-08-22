@@ -1,11 +1,11 @@
 import React from 'react'
-import Detail from './Detail'
+import { NavLink } from 'react-router-dom'
 
-const Item = ({ id, name, img, types, weight, height }) => {
+const Item = ({ id, name, img, types }) => {
     const style = `thumb-container ${types[0].type.name}`
 
     return (
-        <div className={style} onClick={() => { alert(window.location.href + name) }}>
+        <div className={style} >
             <div className='number'>
                 <p>#0{id}</p>
             </div>
@@ -20,8 +20,7 @@ const Item = ({ id, name, img, types, weight, height }) => {
                         )
                     })}
                 </div>
-                {/* <p>weight: {weight} </p>
-                <p>height: {height} </p> */}
+                <NavLink to={`/pokemon/${id}`}>Show</NavLink>
             </div>
         </div>
     )
