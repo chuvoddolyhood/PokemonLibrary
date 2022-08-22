@@ -11,11 +11,11 @@ const List = () => {
         const res = await fetch(api)
         const data = await res.json()
 
-        console.log('log API:', data.next);
+        // console.log('log API:', data.next);
         setApi(data.next)
         nextAPI.current = data.next;
 
-        console.log('log:', data.results);
+        // console.log('log:', data.results);
         // console.log('log:', data.results[0].name);
 
         function createPokemonObject(result) {
@@ -24,11 +24,11 @@ const List = () => {
                 const dataPoke = await resPoke.json()
                 setAllPokemon(prev => [...prev, dataPoke])
 
-                // console.log('log name:', dataPoke);
+                // console.log('log name:', dataPoke.stats[0].base_stat);
             })
         }
         createPokemonObject(data.results);
-        await console.log(allPokemon);
+        // await console.log(allPokemon);
     }
 
     useEffect(() => {

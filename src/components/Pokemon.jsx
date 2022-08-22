@@ -4,34 +4,49 @@ import { useParams } from 'react-router-dom'
 const Pokemon = () => {
     const { id } = useParams();
     const [poke, setPoke] = useState([]);
+    const [loading, setLoading] = useState(true)
 
-    const getPoke = async () => {
-        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
-        const data = await res.json()
-        setPoke(data)
-
-        console.log('log API:', data);
-    }
 
     useEffect(() => {
-        getPoke()
+        const getPoke = async () => {
+            setLoading(true)
+            const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+            const data = await res.json()
+            setPoke(data)
+            setLoading(false)
+        }
+        getPoke();
     }, []) //allPokemon
 
-    console.log(poke.abilities.ability);
+    const Loading = () => {
+        return (
+            <>
+                Loading...
+            </>
+        )
+    }
+
+    const ShowProduct = () => {
+        return (
+            <>
+                <h1>Pokemon {poke.name}</h1>
+                <div className='poke-detail-container'>
+                    <div className='content-left'>
+                        <img src={poke.sprites.other.dream_world.front_default} alt={poke.name} />
+                    </div>
+                    <div className='content-center'>
+                    </div>
+                    <div className='content-right'>
+                    </div>
+                </div>
+            </>
+        )
+    }
 
     return (
         <div className='poke-detail'>
-            <h1>Pokemon {poke.name}</h1>
-            <div className='poke-detail-container'>
-                <div className='content-left'>
-                    <img src="" alt="" />
-                </div>
-                <div className='content-center'>
-
-                </div>
-                <div className='content-right'>
-                </div>
-            </div>
+            {console.log(poke)}
+            {loading ? <Loading /> : <ShowProduct />}
         </div>
     )
 }
