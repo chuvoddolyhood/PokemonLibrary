@@ -1,0 +1,26 @@
+.thumb-pokemon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 2rem;
+    cursor: pointer;
+}
+
+.thumb-pokemon img {
+    margin: auto;
+    width: 40%;
+    height: 100%;
+    display: block;
+}
+
+.thumb-background {
+    background: linear-gradient(180deg, rgba(181, 245, 222, 1) 50%, rgba(255, 255, 255, 1) 100%);
+    border-radius: 100px;
+    height: 100px;
+    width: 100px;
+}
+
+.thumb-background:hover {
+    background: #234050;
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import Thumb from './Thumb';
 import './css/Detail.css'
@@ -219,9 +219,9 @@ const Pokemon = () => {
                         <div className='evolution'>
                             <h3>Evolution</h3>
                             <div className='evolution-container'>
-                                {evolution.chain.species.name !== null ? <Thumb name={evolution.chain.species.name} /> : <Loading />}
-                                {evolution.chain.evolves_to.length !== 0 ? <Thumb name={evolution.chain.evolves_to[0].species.name} /> : <Loading />}
-                                {evolution.chain.evolves_to[0].evolves_to.length !== 0 ? <Thumb name={evolution.chain.evolves_to[0].evolves_to[0].species.name} /> : <Loading />}
+                                {evolution.chain.species.name !== null ? <Thumb name={evolution.chain.species.name} /> : <></>}
+                                {evolution.chain.evolves_to.length !== 0 ? <Thumb name={evolution.chain.evolves_to[0].species.name} /> : <></>}
+                                {evolution.chain.evolves_to[0].evolves_to.length !== 0 ? <Thumb name={evolution.chain.evolves_to[0].evolves_to[0].species.name} /> : <></>}
                             </div>
                         </div>
                     </div>

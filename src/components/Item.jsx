@@ -20,7 +20,7 @@ const Item = ({ id, name, img, types }) => {
                         )
                     })}
                 </div>
-                <NavLink to={`/pokemon/${id}`}>Show</NavLink>
+                <NavLink to={`/pokemon/${id}`} className="show-detail">Show</NavLink>
             </div>
         </div>
     )
