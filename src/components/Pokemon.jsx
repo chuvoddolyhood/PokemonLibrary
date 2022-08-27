@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
+import Thumb from './Thumb';
+import './css/Detail.css'
 
 const Pokemon = () => {
     const { id } = useParams();
     const [poke, setPoke] = useState([]);
     const [species, setSpecies] = useState([]);
+    const [apiEvolution, setApiEvolution] = useState('')
+    const [evolution, setEvolution] = useState([]);
     const [loading, setLoading] = useState(true);
     const [loadingSpecies, setLoadingSpecies] = useState(true);
-
+    const [loadingEvolution, setLoadingEvolution] = useState(true);
 
     const getPoke = async () => {
         // setLoading(true)
@@ -22,7 +26,15 @@ const Pokemon = () => {
         const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
         const data = await res.json()
         setSpecies(data)
+        setApiEvolution(data.evolution_chain.url)
         setLoadingSpecies(false)
+    }
+
+    const getEvolution = async () => {
+        const res = await fetch(apiEvolution)
+        const data = await res.json()
+        setEvolution(data)
+        setLoadingEvolution(false)
     }
 
     useEffect(() => {
@@ -33,6 +45,10 @@ const Pokemon = () => {
         getSpecies()
     }, [])
 
+    useEffect(() => {
+        getEvolution()
+    }, [apiEvolution])
+
     const Loading = () => {
         return (
             <>
@@ -41,68 +57,173 @@ const Pokemon = () => {
         )
     }
 
+    //Chuyen mau theo thuoc tinh (pokemon type)
+    // const typeStyle = `img-container rock`
+    // console.log(typeStyle);
+
+
     const ShowPoke = () => {
         return (
             <>
-                <h1>#{id}</h1>
-                <h1>Pokemon {poke.name}</h1>
-                <h3>Bio</h3>
-                {loadingSpecies ? <Loading /> : species.flavor_text_entries.map((bio, index) => {
-                    return (
-                        <p key={index}>{bio.flavor_text}</p>
-                    )
-                })}
-                <h3>Genus</h3>
-                <p></p>
-                <h3>Species</h3>
-                <p>{poke.species.name}</p>
-                <h3>Height</h3>
-                <p>{poke.height / 10} m</p>
-                <h3>Weight</h3>
-                <p>{poke.weight / 10} kg</p>
-                <h3>Abilities</h3>
-                {poke.abilities.map((abi, index) => {
-                    return (
-                        <p key={index}>{abi.ability.name}</p>
-                    )
-                })}
-                <h2>Training</h2>
-                <h3>Base Exp</h3>
-                <p>{poke.base_experience}</p>
-                <h3>Base happiness</h3>
-                <p></p>
-                <h3>Catch Rate</h3>
-                <p></p>
-                <h3>Growth Rate</h3>
-                <p></p>
-                <h2>Stats</h2>
-                <h3>HP</h3>
-                <p>{poke.stats[0].base_stat} <span>(Effort: {poke.stats[0].effort})</span></p>
-                <h3>Attack</h3>
-                <p>{poke.stats[1].base_stat} <span>(Effort: {poke.stats[1].effort})</span></p>
-                <h3>Defense</h3>
-                <p>{poke.stats[2].base_stat} <span>(Effort: {poke.stats[2].effort})</span></p>
-                <h3>Special-attack</h3>
-                <p>{poke.stats[3].base_stat} <span>(Effort: {poke.stats[3].effort})</span></p>
-                <h3>Special-defense</h3>
-                <p>{poke.stats[4].base_stat} <span>(Effort: {poke.stats[4].effort})</span></p>
-                <h3>Speed</h3>
-                <p>{poke.stats[5].base_stat} <span>(Effort: {poke.stats[5].effort})</span></p>
-                <h3>Type</h3>
-                {poke.types.map((tp, index) => {
-                    return (
-                        <p key={index}>{tp.type.name}</p>
-                    )
-                })}
-                <h2>Evolution</h2>
-
                 <div className='poke-detail-container'>
                     <div className='content-left'>
-                        <img src={poke.sprites.other.dream_world.front_default} alt={poke.name} />
+                        <div className='img-container'>
+                            <h2>#{id}</h2>
+                            <img src={poke.sprites.other.dream_world.front_default} alt={poke.name} />
+                            <h2>{poke.name}</h2>
+                        </div>
                     </div>
                     <div className='content-center'>
+                        <h3>Bio</h3>
+                        {species.flavor_text_entries.map((bio, index) => {
+                            if (bio.language.name === "en" && bio.version.name === "red") {
+                                return (
+                                    <p key={index}>{bio.flavor_text}</p>
+                                )
+                            }
+                        })}
+                        <div className='property-poke'>
+                            <div className='left-property'>
+                                <p className='stats-title'>Genus:</p>
+                            </div>
+                            <div className='right-property'>
+                                {species.genera.map((gen, index) => {
+                                    if (gen.language.name === "en") {
+                                        return (
+                                            <p key={index}>{gen.genus}</p>
+                                        )
+                                    }
+                                })}
+                            </div>
+                        </div>
+                        <div className='property-poke'>
+                            <div className='left-property'>
+                                <p className='stats-title'>Habitat:</p>
+                            </div>
+                            <div className='right-property'>
+                                <p>{species.habitat.name}</p>
+                            </div>
+                        </div>
+                        <div className='property-poke'>
+                            <div className='left-property'>
+                                <p className='stats-title'>Height:</p>
+                            </div>
+                            <div className='right-property'>
+                                <p>{poke.height / 10} m</p>
+                            </div>
+                        </div>
+                        <div className='property-poke'>
+                            <div className='left-property'>
+                                <p className='stats-title'>Weight:</p>
+                            </div>
+                            <div className='right-property'>
+                                <p>{poke.weight / 10} kg</p>
+                            </div>
+                        </div>
+                        <div className='property-poke'>
+                            <div className='left-property'>
+                                <p className='stats-title'>Abilities:</p>
+                            </div>
+                            <div className='right-property'>
+                                {poke.abilities.map((abi, index) => {
+                                    return (
+                                        <p key={index}>{abi.ability.name}</p>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className='property-poke'>
+                            <div className='left-property'>
+                                <p className='stats-title'>Type:</p>
+                            </div>
+                            <div className='right-property'>
+                                {poke.types.map((tp, index) => {
+                                    return (
+                                        <p key={index}>{tp.type.name}</p>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className='property-poke'>
+                            <div className='left-property'>
+                                <p className='stats-title'>Legendary:</p>
+                            </div>
+                            <div className='right-property'>
+                                {species.is_legendary ? <p>Legendary</p> : <p>Not legendary</p>}
+                            </div>
+                        </div>
+                        <h3>Training</h3>
+                        <div className='property-poke'>
+                            <div className='left-property'>
+                                <p className='stats-title'>Base Exp:</p>
+                            </div>
+                            <div className='right-property'>
+                                <p>{poke.base_experience}</p>
+                            </div>
+                        </div>
+                        <div className='property-poke'>
+                            <div className='left-property'>
+                                <p className='stats-title'>Base Happiness:</p>
+                            </div>
+                            <div className='right-property'>
+                                <p>{species.base_happiness}</p>
+                            </div>
+                        </div>
+                        <div className='property-poke'>
+                            <div className='left-property'>
+                                <p className='stats-title'>Catch Rate:</p>
+                            </div>
+                            <div className='right-property'>
+                                <p>{species.capture_rate}</p>
+                            </div>
+                        </div>
+                        <div className='property-poke'>
+                            <div className='left-property'>
+                                <p className='stats-title'>Growth Rate:</p>
+                            </div>
+                            <div className='right-property'>
+                                <p>{species.growth_rate.name}</p>
+                            </div>
+                        </div>
                     </div>
                     <div className='content-right'>
+                        <div className='stats-poke'>
+                            <h3>Stats</h3>
+                            <div className='stats-container'>
+                                <div className='stats-component'>
+                                    <p className='stats-title'>HP</p>
+                                    <p title={poke.stats[0].effort}>{poke.stats[0].base_stat}</p>
+                                </div>
+                                <div className='stats-component'>
+                                    <p className='stats-title'>Attack</p>
+                                    <p title={poke.stats[1].effort}>{poke.stats[1].base_stat}</p>
+                                </div>
+                                <div className='stats-component'>
+                                    <p className='stats-title'>Defense</p>
+                                    <p title={poke.stats[2].effort}>{poke.stats[2].base_stat}</p>
+                                </div>
+                                <div className='stats-component'>
+                                    <p className='stats-title'>Special-attack</p>
+                                    <p title={poke.stats[3].effort}>{poke.stats[3].base_stat}</p>
+                                </div>
+                                <div className='stats-component'>
+                                    <p className='stats-title'>Special-defense</p>
+                                    <p title={poke.stats[4].effort}>{poke.stats[4].base_stat}</p>
+                                </div>
+                                <div className='stats-component'>
+                                    <p className='stats-title'>Speed</p>
+                                    <p title={poke.stats[5].effort}>{poke.stats[5].base_stat}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='evolution'>
+                            <h3>Evolution</h3>
+                            <div className='evolution-container'>
+                                {evolution.chain.species.name !== null ? <Thumb name={evolution.chain.species.name} /> : <Loading />}
+                                {evolution.chain.evolves_to.length !== 0 ? <Thumb name={evolution.chain.evolves_to[0].species.name} /> : <Loading />}
+                                {evolution.chain.evolves_to[0].evolves_to.length !== 0 ? <Thumb name={evolution.chain.evolves_to[0].evolves_to[0].species.name} /> : <Loading />}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </>
@@ -117,7 +238,7 @@ const Pokemon = () => {
      */
     return (
         <div className='poke-detail'>
-            {loading ? <Loading /> : <ShowPoke />}
+            {loading || loadingSpecies || loadingEvolution ? <Loading /> : <ShowPoke />}
         </div>
     )
 }

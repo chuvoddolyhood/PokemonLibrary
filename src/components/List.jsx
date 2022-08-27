@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Item from './Item'
-import './Pokemon.css'
+import './css/ListPokemon.css'
 
 const List = () => {
     const [allPokemon, setAllPokemon] = useState([])
